@@ -36,9 +36,11 @@ export default Component.extend({
   placeholder: 'Not Provided',
   saveLabel: 'Save',
   fieldWidth: null,
+  originalValue: null,
 
   didInsertElement () {
     this._handleClick = this._handleClick.bind(this)
+    this.set('originalValue', this.get('value'))
 
     $(document).on('click', this._handleClick)
   },
@@ -66,7 +68,7 @@ export default Component.extend({
 
       if (get(this, 'showEditButton')) return
 
-      this._setFieldWidth()
+      //this._setFieldWidth()
       this.send('startEditing', e)
 
     } else if (!clickedInside && isEditing) {
@@ -90,7 +92,7 @@ export default Component.extend({
   actions: {
     save () {
       info('[ember-inline-edit] Got the `onSave` action')
-
+      this.set('originalValue', this.get('value'))
       this.sendAction('onSave', this.get('value'))
 
       run(this, () => {
@@ -110,6 +112,7 @@ export default Component.extend({
 
     close () {
       info('[ember-inline-edit] Got the `onClose` action')
+      this.set('value', this.get('originalValue'))
       this.sendAction('onClose')
 
       run(this, () => {
